@@ -1,1 +1,2 @@
-# salkodev.edms.go
+# SalkoDev.EDMS.Go
+Document management system on mongodb, Go language
