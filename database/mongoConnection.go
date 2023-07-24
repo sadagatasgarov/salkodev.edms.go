@@ -13,12 +13,18 @@ import (
 // Ім'я колекції Users (користувачі системи)
 const UsersCollectionName = "Users"
 
+// Змінна оточення яка містить URI до MongoDB
+const MongoDBURIEnv = "SALKODEV_EDMS_MONGODB_URI"
+
+// Змінна оточення яка містить назву бази в MongoDB
+const MongoDBDataBaseEnv = "SALKODEV_EDMS_MONGODB_DATABASE"
+
 // Підключитися до Mongodb
 func _Connect() *mongo.Client {
 
-	uri := os.Getenv("MONGODB_URI_SALKODEV")
+	uri := os.Getenv(MongoDBURIEnv)
 	if uri == "" {
-		log.Fatal("You must set your 'MONGODB_URI' environmental variable")
+		log.Fatal("You must set your '", MongoDBURIEnv, "' environmental variable")
 	}
 
 	client, err := mongo.NewClient(options.Client().ApplyURI(uri))
@@ -44,10 +50,10 @@ var DBClient *mongo.Client = _Connect()
 
 // Отримати колекцію Users бази даних
 func Users() *mongo.Collection {
-	dbName := os.Getenv("MONGODB_SALKODEV_EDMS")
+	dbName := os.Getenv(MongoDBDataBaseEnv)
 	if dbName == "" {
-		log.Fatal("You must set your 'MONGODB_SALKODEV_EDMS' environmental variable")
-		panic("You must set your 'MONGODB_SALKODEV_EDMS' environmental variable")
+		log.Fatal("You must set your '", MongoDBDataBaseEnv, "' environmental variable")
+		panic("You must set your '" + MongoDBDataBaseEnv + "' environmental variable")
 	}
 
 	collection := DBClient.Database(dbName).Collection(UsersCollectionName)

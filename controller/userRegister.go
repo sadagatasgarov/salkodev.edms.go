@@ -9,6 +9,7 @@ import (
 
 	"github.com/AndrewSalko/salkodev.edms.go/auth"
 	"github.com/AndrewSalko/salkodev.edms.go/database"
+	"github.com/AndrewSalko/salkodev.edms.go/email"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"go.mongodb.org/mongo-driver/bson"
@@ -72,10 +73,9 @@ func Register(c *gin.Context) {
 
 	emailConfirmToken := auth.GenerateEmailConfirmationToken(userIDStr, user.Email)
 
-	// //отправить его на заданный адрес почты
-	// string htmlBody = $"emailConfirmToken: {emailConfirmToken}";
-
-	// await _EmailSender.SendEmailAsync(request.Email, "Confirm registration", htmlBody);
+	//TODO: зробити шаблон email для підтв.реєстрації
+	emailBody := "Click on link to finish registration. Code: " + emailConfirmToken
+	email.SendMail(user.Email, "SalkoDev EDMS registration", emailBody)
 
 	jwtToken, err := auth.GenerateJwtToken(user.Email)
 	if err != nil {

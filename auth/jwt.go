@@ -9,7 +9,7 @@ import (
 )
 
 // long secret string with random chars
-const EnvNameJWTSecretKey string = "MONGODB_SALKODEV_EDMS_JWT_SECRET_KEY"
+const EnvNameJWTSecretKey string = "SALKODEV_EDMS_JWT_SECRET_KEY"
 
 var _JWTSecretKeyStr string = os.Getenv(EnvNameJWTSecretKey)
 
