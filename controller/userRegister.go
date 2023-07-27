@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/AndrewSalko/salkodev.edms.go/auth"
@@ -42,9 +43,12 @@ func Register(c *gin.Context) {
 		return
 	}
 
+	//перевести email до lower-case
+	emailNormalized := strings.ToLower(user.Email)
+
 	users := database.Users()
 
-	count, err := users.CountDocuments(ctx, bson.M{"email": user.Email})
+	count, err := users.CountDocuments(ctx, bson.M{"email": emailNormalized})
 
 	if err != nil {
 		log.Panic(err)
@@ -71,13 +75,13 @@ func Register(c *gin.Context) {
 	userIDStr := resultInsertionNumber.InsertedID.(primitive.ObjectID).Hex()
 	//потрібно надіслати Email з особливим посиланням-підтвердженням (токен для підтвердження)
 
-	emailConfirmToken := auth.GenerateEmailConfirmationToken(userIDStr, user.Email)
+	emailConfirmToken := auth.GenerateEmailConfirmationToken(userIDStr, emailNormalized)
 
 	//TODO: зробити шаблон email для підтв.реєстрації
 	emailBody := "Click on link to finish registration. Code: " + emailConfirmToken
-	email.SendMail(user.Email, "SalkoDev EDMS registration", emailBody)
+	email.SendMail(emailNormalized, "SalkoDev EDMS registration", emailBody)
 
-	jwtToken, err := auth.GenerateJwtToken(user.Email)
+	jwtToken, err := auth.GenerateToken(emailNormalized)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

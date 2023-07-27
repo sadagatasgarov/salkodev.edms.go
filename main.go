@@ -11,7 +11,7 @@ func main() {
 	fmt.Println("SalkoDev.EDMS Go")
 
 	router := gin.New()
-	routes.UserRoutes(router)
+	routes.InitRoutes(router)
 	router.Run(":8080")
 
 	fmt.Println("Finished")

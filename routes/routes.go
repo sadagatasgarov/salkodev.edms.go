@@ -5,10 +5,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func UserRoutes(incomingRoutes *gin.Engine) {
+func InitRoutes(routes *gin.Engine) {
 
-	incomingRoutes.POST("users/register", controller.Register)
-	incomingRoutes.POST("users/login", controller.Login)
-	incomingRoutes.POST("users/changepassword", controller.ChangePassword)
+	routes.POST("users/register", controller.Register)
+	routes.POST("users/login", controller.Login)
+	routes.POST("users/changepassword", AuthMiddleware(), controller.ChangePassword)
 
 }

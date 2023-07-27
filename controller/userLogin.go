@@ -3,6 +3,7 @@ package controller
 import (
 	"context"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/AndrewSalko/salkodev.edms.go/auth"
@@ -40,7 +41,9 @@ func Login(c *gin.Context) {
 	//знайти користувача в базі (логін - мейл)
 	users := database.Users()
 
-	filter := bson.M{"email": loginReq.Email}
+	email := strings.ToLower(loginReq.Email)
+
+	filter := bson.M{"email": email}
 	var resultUser UserRegistrationRequest
 	errFindUser := users.FindOne(ctx, filter).Decode(&resultUser)
 
@@ -59,7 +62,12 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	//TODO: вернуть токен JWT
-	c.JSON(http.StatusOK, gin.H{"result": "OK"})
+	token, err := auth.GenerateToken(email)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "result GenerateJwtToken: " + err.Error()})
+		return
+	}
 
+	//повертаємо токен JWT
+	c.JSON(http.StatusOK, gin.H{"token": token})
 }
