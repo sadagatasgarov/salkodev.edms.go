@@ -52,12 +52,12 @@ func Register(c *gin.Context) {
 
 	if err != nil {
 		log.Panic(err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error detected while fetching the email"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "error detected while fetching the email"})
 		return
 	}
 
 	if count > 0 {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "User with email already exists"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "user with email already exists"})
 		return
 	}
 
@@ -81,16 +81,19 @@ func Register(c *gin.Context) {
 	emailBody := "Click on link to finish registration. Code: " + emailConfirmToken
 	email.SendMail(emailNormalized, "SalkoDev EDMS registration", emailBody)
 
-	jwtToken, err := auth.GenerateToken(emailNormalized)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
+	// jwtToken, err := auth.GenerateToken(emailNormalized)
+	// if err != nil {
+	// 	c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	// 	return
+	// }
+
+	// resultData := gin.H{
+	// 	"userID":             userIDStr,
+	// 	"token":              jwtToken,
+	// 	"confirmation_token": emailConfirmToken}
 
 	resultData := gin.H{
-		"userID":             userIDStr,
-		"token":              jwtToken,
-		"confirmation_token": emailConfirmToken}
+		"message": "Check your email and confirm registration"}
 
 	c.JSON(http.StatusOK, resultData)
 }

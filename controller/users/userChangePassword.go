@@ -26,15 +26,7 @@ func ChangePassword(c *gin.Context) {
 		return
 	}
 
-	// validate := validator.New()
-	// validationErr := validate.Struct(loginReq)
-
-	// if validationErr != nil {
-	// 	c.JSON(http.StatusBadRequest, gin.H{"error": validationErr.Error()})
-	// 	return
-	// }
-
 	//TODO: реализовать смену пароля
-	c.JSON(http.StatusOK, gin.H{"result": "OK"})
+	c.JSON(http.StatusBadRequest, gin.H{"result": "not implemented"})
 
 }
