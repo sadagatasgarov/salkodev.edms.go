@@ -14,7 +14,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type UserRegistrationRequest struct {
@@ -64,7 +63,7 @@ func Register(c *gin.Context) {
 	passwordHashed := auth.HashPassword(user.Password)
 	user.Password = passwordHashed
 
-	resultInsertionNumber, insertErr := users.InsertOne(ctx, user)
+	_, insertErr := users.InsertOne(ctx, user)
 	if insertErr != nil {
 		msg := fmt.Sprintf("Error inserting User: %s", insertErr.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"error": msg})
@@ -72,28 +71,20 @@ func Register(c *gin.Context) {
 	}
 	defer cancel()
 
-	userIDStr := resultInsertionNumber.InsertedID.(primitive.ObjectID).Hex()
 	//потрібно надіслати Email з особливим посиланням-підтвердженням (токен для підтвердження)
-
-	emailConfirmToken := auth.GenerateEmailConfirmationToken(userIDStr, emailNormalized)
+	emailConfirmToken, errConfirm := auth.GenerateTokenForUserRegistration(emailNormalized)
+	if errConfirm != nil {
+		msg := fmt.Sprintf("error generate confirmation token: %s", errConfirm.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"error": msg})
+		return
+	}
 
 	//TODO: зробити шаблон email для підтв.реєстрації
-	emailBody := "Click on link to finish registration. Code: " + emailConfirmToken
+	//TODO: подумати де брати справжній сервер (домен)
+	emailBody := "Click on link to finish registration http://localhost:8080/users/confirmregistration?token=" + emailConfirmToken
 	email.SendMail(emailNormalized, "SalkoDev EDMS registration", emailBody)
 
-	// jwtToken, err := auth.GenerateToken(emailNormalized)
-	// if err != nil {
-	// 	c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-	// 	return
-	// }
-
-	// resultData := gin.H{
-	// 	"userID":             userIDStr,
-	// 	"token":              jwtToken,
-	// 	"confirmation_token": emailConfirmToken}
-
-	resultData := gin.H{
-		"message": "Check your email and confirm registration"}
+	resultData := gin.H{"message": "Check your email and confirm registration"}
 
 	c.JSON(http.StatusOK, resultData)
 }

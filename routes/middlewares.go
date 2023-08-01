@@ -27,7 +27,7 @@ func AuthMiddleware() gin.HandlerFunc {
 
 		token := parts[1] //second part
 
-		err := auth.ValidateToken(token)
+		_, err := auth.ValidateToken(token)
 		if err != nil {
 			context.JSON(401, gin.H{"error": err.Error()})
 			context.Abort()

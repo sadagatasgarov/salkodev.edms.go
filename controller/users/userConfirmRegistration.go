@@ -11,7 +11,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-// URL param with token for user registration (email) confirmation
+// URL param with special JWT for user registration (email) confirmation
 const ConfirmUserRegistrationTokenParam = "token"
 
 // User's email
@@ -28,16 +28,16 @@ func ConfirmRegistration(c *gin.Context) {
 		return
 	}
 
-	emailParam := c.Query(ConfirmUserEmail)
-	if emailParam == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "user email not specified"})
+	claims, errValidate := auth.ValidateTokenForRegistrationConfirmation(confirmToken)
+	if errValidate != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": errValidate.Error()})
 		return
 	}
 
-	//TODO: звірити токен (криптографічно), він має містити обмеження за часом та гарантовану перевірку що він наш
+	email := claims.Email
 
 	//знайти користувача за мейлом
-	user, findErr := auth.FindUser(ctx, emailParam)
+	user, findErr := auth.FindUser(ctx, email)
 
 	if findErr != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "access denied, user not found"})
