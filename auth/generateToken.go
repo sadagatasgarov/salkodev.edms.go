@@ -8,18 +8,18 @@ import (
 )
 
 // Common-used JWT token
-func GenerateToken(email string) (string, error) {
-	token, err := _GenerateToken(email, 0)
+func GenerateToken(email string, userHash string) (string, error) {
+	token, err := _GenerateToken(email, 0, userHash)
 	return token, err
 }
 
 // JWT token for user registration confirmation. It can't be used anywhere instead of one confirmation function
 func GenerateTokenForUserRegistration(email string) (string, error) {
-	token, err := _GenerateToken(email, FlagRegistrationConfirmation)
+	token, err := _GenerateToken(email, FlagRegistrationConfirmation, "")
 	return token, err
 }
 
-func _GenerateToken(email string, flags uint) (string, error) {
+func _GenerateToken(email string, flags uint, userHash string) (string, error) {
 
 	if _JWTSecretKeyStr == "" {
 		return "", errors.New("JWT secret key not found")
@@ -36,10 +36,14 @@ func _GenerateToken(email string, flags uint) (string, error) {
 	}
 
 	expDate := jwt.NewNumericDate(expireTime)
-	token = jwt.NewWithClaims(jwt.SigningMethodHS256, UserClaim{
+
+	userClaim := UserClaim{
 		RegisteredClaims: jwt.RegisteredClaims{ExpiresAt: expDate},
 		Email:            email,
-		Flags:            flags})
+		Flags:            flags,
+		UserHash:         userHash}
+
+	token = jwt.NewWithClaims(jwt.SigningMethodHS256, userClaim)
 
 	resultJWT, err := token.SignedString(secretKeyBytes)
 	if err != nil {

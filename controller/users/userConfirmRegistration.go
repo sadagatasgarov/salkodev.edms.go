@@ -37,7 +37,7 @@ func ConfirmRegistration(c *gin.Context) {
 	email := claims.Email
 
 	//знайти користувача за мейлом
-	user, findErr := auth.FindUser(ctx, email)
+	user, findErr := database.FindUser(ctx, email)
 
 	if findErr != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "access denied, user not found"})

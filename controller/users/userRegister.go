@@ -61,12 +61,12 @@ func Register(c *gin.Context) {
 	}
 
 	passwordHashed := auth.HashPassword(user.Password)
-	user.Password = passwordHashed
 
-	_, insertErr := users.InsertOne(ctx, user)
-	if insertErr != nil {
-		msg := fmt.Sprintf("Error inserting User: %s", insertErr.Error())
-		c.JSON(http.StatusInternalServerError, gin.H{"error": msg})
+	userInfo := database.UserInfo{Name: user.Name, Email: user.Email, Password: passwordHashed}
+
+	_, err = database.CreateUser(ctx, userInfo)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 	defer cancel()

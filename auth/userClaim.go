@@ -11,6 +11,7 @@ const AuthUserClaimKey = "salkodev-jwt-userclaim"
 
 type UserClaim struct {
 	jwt.RegisteredClaims
-	Email string
-	Flags uint //позначки-флаги для окремих типів jwt
+	Email    string `json:"email"`
+	Flags    uint   `json:"flags,omitempty"`     //позначки-флаги для окремих типів jwt
+	UserHash string `json:"user_hash,omitempty"` //хеш користувача (для виявлення змін)
 }

@@ -3,14 +3,12 @@ package controller
 import (
 	"context"
 	"net/http"
-	"strings"
 	"time"
 
 	"github.com/AndrewSalko/salkodev.edms.go/auth"
 	"github.com/AndrewSalko/salkodev.edms.go/database"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
-	"go.mongodb.org/mongo-driver/bson"
 )
 
 type UserLoginRequest struct {
@@ -39,30 +37,30 @@ func Login(c *gin.Context) {
 	}
 
 	//знайти користувача в базі (логін - мейл)
-	users := database.Users()
+	user, err := database.FindUser(ctx, loginReq.Email)
 
-	email := strings.ToLower(loginReq.Email)
-
-	filter := bson.M{"email": email}
-	var resultUser UserRegistrationRequest
-	errFindUser := users.FindOne(ctx, filter).Decode(&resultUser)
-
-	if errFindUser != nil {
-		//log.Panic(err)
+	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Access denied, check login and password (1)"})
 		return
 	}
 
 	//сверим пароль который мы получили в запросе с хешированным в базе...
 	//в структуре resultUser.Password уже хеш пароля, а loginReq.Password - открытый пароль
-	verifyResult := auth.VerifyPassword(loginReq.Password, resultUser.Password)
+	verifyResult := auth.VerifyPassword(loginReq.Password, user.Password)
 
 	if !verifyResult {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Access denied, check login and password (2)"})
 		return
 	}
 
-	token, err := auth.GenerateToken(email)
+	//перевірити, чи не блоковано облік.запис - тут пароль вже перевірено, тому
+	//атакер не знатиме стан облік.запису без пароля
+	if user.AccountOptions&database.UserAccountOptionDisabled > 0 {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Account disabled"})
+		return
+	}
+
+	token, err := auth.GenerateToken(user.Email, user.Hash)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "result GenerateJwtToken: " + err.Error()})
 		return

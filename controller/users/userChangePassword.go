@@ -38,7 +38,7 @@ func ChangePassword(c *gin.Context) {
 	userClaim := claim.(*auth.UserClaim)
 
 	//знайти користувача за email
-	user, err := auth.FindUser(ctx, userClaim.Email)
+	user, err := database.FindUser(ctx, userClaim.Email)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -85,7 +85,7 @@ func ChangePassword(c *gin.Context) {
 		return
 	}
 
-	token, err := auth.GenerateToken(user.Email)
+	token, err := auth.GenerateToken(user.Email, "") //TODO: зміна пароля - хеш користувача треба розрахувати та записати
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "result GenerateJwtToken: " + err.Error()})
 		return
