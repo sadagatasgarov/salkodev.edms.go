@@ -14,6 +14,10 @@ func FindUser(ctx context.Context, userEmail string) (user UserInfo, err error) 
 	users := Users()
 
 	email := strings.ToLower(userEmail)
+	err = ValidateValueSanitization(email)
+	if err != nil {
+		return
+	}
 
 	filter := bson.M{"email": email}
 	err = users.FindOne(ctx, filter).Decode(&user)
@@ -24,7 +28,12 @@ func FindUser(ctx context.Context, userEmail string) (user UserInfo, err error) 
 // Find user and check user hash with actual hash in db
 func FindUserAndCheckHash(ctx context.Context, userEmail string, userHashFromToken string) (user UserInfo, err error) {
 	users := Users()
+
 	email := strings.ToLower(userEmail)
+	err = ValidateValueSanitization(email)
+	if err != nil {
+		return
+	}
 
 	filter := bson.M{"email": email}
 	err = users.FindOne(ctx, filter).Decode(&user)
