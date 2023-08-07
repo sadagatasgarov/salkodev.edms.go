@@ -1,6 +1,7 @@
 ﻿package main
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/AndrewSalko/salkodev.edms.go/database"
@@ -12,6 +13,7 @@ func main() {
 	fmt.Println("SalkoDev.EDMS Go")
 
 	database.ValidateUsersCollection()
+	database.ValidateAdminAccount(context.TODO())
 
 	router := gin.New()
 	routes.InitRoutes(router)

@@ -7,18 +7,18 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/google/uuid"
+	"github.com/AndrewSalko/salkodev.edms.go/core"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type UserInfo struct {
 	ID              primitive.ObjectID `bson:"_id" json:"id,omitempty"`
 	UID             string             `bson:"uid" json:"uid" binding:"required"`
-	OrganizationUID string             `bson:"org_uid" json:"org_uid"`
+	OrganizationUID string             `bson:"org_uid" json:"org_uid,omitempty"`
 	Name            string             `bson:"name" json:"name" binding:"required"`
 	Email           string             `bson:"email" json:"email" binding:"required"`
 	AccountOptions  int                `bson:"account_options" json:"account_options" binding:"required"`
-	Password        string             `bson:"password" json:"password" binding:"required"`
+	Password        string             `bson:"password" json:"password" binding:"required"` //password hash
 	EmailConfirmed  bool               `bson:"email_confirmed" json:"email_confirmed"`
 	Hash            string             `bson:"hash" json:"hash"` //хеш користувача (для виявлення змін)
 }
@@ -51,13 +51,13 @@ func CreateUser(ctx context.Context, user UserInfo) (createdUser UserInfo, err e
 
 	//generate new UID if not specified
 	if user.UID == "" {
-		user.UID = generateUID()
+		user.UID = core.GenerateUID()
 	}
 
 	//Org UID not required
 
 	//розрахувати хеш важливих даних користувача
-	user.Hash = generateUserHash(user.UID, user.OrganizationUID, user.Name, user.Email, user.AccountOptions, user.Password)
+	user.Hash = GenerateUserHash(user.UID, user.OrganizationUID, user.Name, user.Email, user.AccountOptions, user.Password)
 
 	result, insertErr := users.InsertOne(ctx, user)
 	if insertErr != nil {
@@ -70,14 +70,8 @@ func CreateUser(ctx context.Context, user UserInfo) (createdUser UserInfo, err e
 	return user, nil
 }
 
-// Generate new UID
-func generateUID() string {
-	uidStr := uuid.New().String()
-	return uidStr
-}
-
 // Generates hash on critical user data, for controlling changes
-func generateUserHash(uid string, orgUid string, name string, email string, accountOptions int, passwordHash string) string {
+func GenerateUserHash(uid string, orgUid string, name string, email string, accountOptions int, passwordHash string) string {
 
 	dataStr := fmt.Sprintf("uid:%s orgUid:%s name:%s email:%s accountOptions:%x passwordHash:%s", uid, orgUid, name, email, accountOptions, passwordHash)
 	data := []byte(dataStr)
