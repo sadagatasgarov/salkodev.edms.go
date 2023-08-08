@@ -1,4 +1,4 @@
-package database
+package database_users
 
 import (
 	"context"
@@ -6,10 +6,10 @@ import (
 	"os"
 
 	"github.com/AndrewSalko/salkodev.edms.go/auth"
+	"github.com/AndrewSalko/salkodev.edms.go/database"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 const AdminAccountName = "admin"
@@ -26,13 +26,24 @@ const AdminAccountIDStr = "2604000000000000000000AD"
 func ValidateUsersCollection() {
 
 	users := Users()
+	ctx := context.TODO()
 
-	indexModel := mongo.IndexModel{
-		Keys:    bson.D{{Key: "email", Value: 1}},
-		Options: options.Index().SetUnique(true),
+	err := database.CreateCollectionUniqueIndexOnField(ctx, users, "email")
+	if err != nil {
+		panic(err)
 	}
 
-	_, err := users.Indexes().CreateOne(context.TODO(), indexModel)
+	err = database.CreateCollectionUniqueIndexOnField(ctx, users, "uid")
+	if err != nil {
+		panic(err)
+	}
+
+	err = database.CreateCollectionIndexOnField(ctx, users, "org_uid")
+	if err != nil {
+		panic(err)
+	}
+
+	err = database.CreateCollectionIndexOnField(ctx, users, "name")
 	if err != nil {
 		panic(err)
 	}

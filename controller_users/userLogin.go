@@ -1,4 +1,4 @@
-package controller
+package controller_users
 
 import (
 	"context"
@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/AndrewSalko/salkodev.edms.go/auth"
-	"github.com/AndrewSalko/salkodev.edms.go/database"
+	"github.com/AndrewSalko/salkodev.edms.go/database_users"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 )
@@ -37,7 +37,7 @@ func Login(c *gin.Context) {
 	}
 
 	//знайти користувача в базі (логін - мейл)
-	user, err := database.FindUser(ctx, loginReq.Email)
+	user, err := database_users.FindUser(ctx, loginReq.Email)
 
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Access denied, check login and password (1)"})
@@ -55,7 +55,7 @@ func Login(c *gin.Context) {
 
 	//перевірити, чи не блоковано облік.запис - тут пароль вже перевірено, тому
 	//атакер не знатиме стан облік.запису без пароля
-	if user.AccountOptions&database.UserAccountOptionDisabled > 0 {
+	if user.AccountOptions&database_users.UserAccountOptionDisabled > 0 {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Account disabled"})
 		return
 	}

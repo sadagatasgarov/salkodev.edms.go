@@ -1,4 +1,4 @@
-package controller
+package controller_users
 
 import (
 	"context"
@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/AndrewSalko/salkodev.edms.go/auth"
-	"github.com/AndrewSalko/salkodev.edms.go/database"
+	"github.com/AndrewSalko/salkodev.edms.go/database_users"
 	"github.com/AndrewSalko/salkodev.edms.go/email"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
@@ -45,7 +45,7 @@ func Register(c *gin.Context) {
 	//перевести email до lower-case
 	emailNormalized := strings.ToLower(user.Email)
 
-	users := database.Users()
+	users := database_users.Users()
 
 	count, err := users.CountDocuments(ctx, bson.M{"email": emailNormalized})
 
@@ -62,9 +62,9 @@ func Register(c *gin.Context) {
 
 	passwordHashed := auth.HashPassword(user.Password)
 
-	userInfo := database.UserInfo{Name: user.Name, Email: user.Email, Password: passwordHashed}
+	userInfo := database_users.UserInfo{Name: user.Name, Email: user.Email, Password: passwordHashed}
 
-	_, err = database.CreateUser(ctx, userInfo)
+	_, err = database_users.CreateUser(ctx, userInfo)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

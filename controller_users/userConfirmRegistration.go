@@ -1,4 +1,4 @@
-package controller
+package controller_users
 
 import (
 	"context"
@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/AndrewSalko/salkodev.edms.go/auth"
-	"github.com/AndrewSalko/salkodev.edms.go/database"
+	"github.com/AndrewSalko/salkodev.edms.go/database_users"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 )
@@ -37,14 +37,14 @@ func ConfirmRegistration(c *gin.Context) {
 	email := claims.Email
 
 	//знайти користувача за мейлом
-	user, findErr := database.FindUser(ctx, email)
+	user, findErr := database_users.FindUser(ctx, email)
 
 	if findErr != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "access denied, user not found"})
 		return
 	}
 
-	users := database.Users()
+	users := database_users.Users()
 	filter := bson.M{"_id": user.ID}
 	update := bson.D{{Key: "$set", Value: bson.D{{Key: "email_confirmed", Value: true}}}}
 

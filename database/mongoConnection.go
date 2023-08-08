@@ -10,9 +10,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-// Ім'я колекції Users (користувачі системи)
-const UsersCollectionName = "Users"
-
 // Змінна оточення яка містить URI до MongoDB
 const MongoDBURIEnv = "SALKODEV_EDMS_MONGODB_URI"
 
@@ -48,14 +45,12 @@ func _Connect() *mongo.Client {
 
 var DBClient *mongo.Client = _Connect()
 
-// Отримати колекцію Users бази даних
-func Users() *mongo.Collection {
+func DataBase() *mongo.Database {
 	dbName := os.Getenv(MongoDBDataBaseEnv)
 	if dbName == "" {
 		log.Fatal("You must set your '", MongoDBDataBaseEnv, "' environmental variable")
 		panic("You must set your '" + MongoDBDataBaseEnv + "' environmental variable")
 	}
 
-	collection := DBClient.Database(dbName).Collection(UsersCollectionName)
-	return collection
+	return DBClient.Database(dbName)
 }

@@ -1,4 +1,4 @@
-package database
+package database_users
 
 const UserAccountOptionNone = 0
 

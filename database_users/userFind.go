@@ -1,10 +1,11 @@
-package database
+package database_users
 
 import (
 	"context"
 	"errors"
 	"strings"
 
+	"github.com/AndrewSalko/salkodev.edms.go/database"
 	"go.mongodb.org/mongo-driver/bson"
 )
 
@@ -14,7 +15,7 @@ func FindUser(ctx context.Context, userEmail string) (user UserInfo, err error) 
 	users := Users()
 
 	email := strings.ToLower(userEmail)
-	err = ValidateValueSanitization(email)
+	err = database.ValidateValueSanitization(email)
 	if err != nil {
 		return
 	}
@@ -30,7 +31,7 @@ func FindUserAndCheckHash(ctx context.Context, userEmail string, userHashFromTok
 	users := Users()
 
 	email := strings.ToLower(userEmail)
-	err = ValidateValueSanitization(email)
+	err = database.ValidateValueSanitization(email)
 	if err != nil {
 		return
 	}

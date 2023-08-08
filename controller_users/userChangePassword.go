@@ -1,4 +1,4 @@
-package controller
+package controller_users
 
 import (
 	"context"
@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/AndrewSalko/salkodev.edms.go/auth"
-	"github.com/AndrewSalko/salkodev.edms.go/database"
+	"github.com/AndrewSalko/salkodev.edms.go/database_users"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 )
@@ -38,7 +38,7 @@ func ChangePassword(c *gin.Context) {
 	userClaim := claim.(*auth.UserClaim)
 
 	//знайти користувача за email
-	user, err := database.FindUser(ctx, userClaim.Email)
+	user, err := database_users.FindUser(ctx, userClaim.Email)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -74,7 +74,7 @@ func ChangePassword(c *gin.Context) {
 	passwordHashed := auth.HashPassword(newPass)
 
 	//оновлюємо в базі користувача
-	users := database.Users()
+	users := database_users.Users()
 	filter := bson.M{"_id": user.ID}
 	update := bson.D{{Key: "$set", Value: bson.D{{Key: "password", Value: passwordHashed}}}}
 

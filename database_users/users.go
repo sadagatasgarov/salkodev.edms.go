@@ -1,4 +1,4 @@
-package database
+package database_users
 
 import (
 	"context"
@@ -8,8 +8,13 @@ import (
 	"fmt"
 
 	"github.com/AndrewSalko/salkodev.edms.go/core"
+	"github.com/AndrewSalko/salkodev.edms.go/database"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
 )
+
+// Ім'я колекції Users (користувачі системи)
+const UsersCollectionName = "Users"
 
 type UserInfo struct {
 	ID              primitive.ObjectID `bson:"_id" json:"id,omitempty"`
@@ -21,6 +26,12 @@ type UserInfo struct {
 	Password        string             `bson:"password" json:"password" binding:"required"` //password hash
 	EmailConfirmed  bool               `bson:"email_confirmed" json:"email_confirmed"`
 	Hash            string             `bson:"hash" json:"hash"` //хеш користувача (для виявлення змін)
+}
+
+// Отримати колекцію Users бази даних
+func Users() *mongo.Collection {
+	collection := database.DataBase().Collection(UsersCollectionName)
+	return collection
 }
 
 // Creates new User in Users collection

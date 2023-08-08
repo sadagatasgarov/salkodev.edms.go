@@ -5,8 +5,6 @@ import (
 	"strings"
 )
 
-//const MongoForbiddenCharacters="${}"
-
 func ValidateValueSanitization(val string) error {
 
 	valTrimmed := strings.TrimSpace(val)
