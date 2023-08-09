@@ -22,11 +22,20 @@ const AdminAccountUID = "26040000-0000-0000-0000-0000000000AD"
 // _id for Admin user (12 byte hex)
 const AdminAccountIDStr = "2604000000000000000000AD"
 
+func ValidateSchema() {
+
+	ctx := context.TODO()
+
+	ValidateUsersCollection(ctx)
+	ValidateAdminAccount(ctx)
+
+	log.Println("Users schema validated")
+}
+
 // Validate Users collection in MongoDB, indexes and others
-func ValidateUsersCollection() {
+func ValidateUsersCollection(ctx context.Context) {
 
 	users := Users()
-	ctx := context.TODO()
 
 	err := database.CreateCollectionUniqueIndexOnField(ctx, users, "email")
 	if err != nil {
@@ -47,8 +56,6 @@ func ValidateUsersCollection() {
 	if err != nil {
 		panic(err)
 	}
-
-	log.Println("UsersCollection schema validated")
 }
 
 func ValidateAdminAccount(ctx context.Context) {
@@ -96,5 +103,4 @@ func ValidateAdminAccount(ctx context.Context) {
 	}
 
 	//TODO: validate user account if found
-	log.Println("Admin user schema validated")
 }

@@ -13,8 +13,8 @@ import (
 func main() {
 	fmt.Println("SalkoDev.EDMS Go")
 
-	database_groups.ValidateGroupsCollection()
-	database_users.ValidateUsersCollection()
+	database_groups.ValidateSchema()
+	database_users.ValidateSchema()
 
 	database_users.ValidateAdminAccount(context.TODO())
 
