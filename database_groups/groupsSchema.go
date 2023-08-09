@@ -65,7 +65,7 @@ func validateGroup(ctx context.Context, id string, name string, uniqueName strin
 
 	groups := Groups()
 
-	filter := bson.M{"_id": id}
+	filter := bson.M{"_id": objId}
 	var group GroupInfo
 	err := groups.FindOne(ctx, filter).Decode(&group)
 	notFound := false
