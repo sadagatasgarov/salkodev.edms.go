@@ -11,6 +11,7 @@ func InitRoutes(routes *gin.Engine) {
 	routes.POST("users/login", controller_users.Login)
 	routes.GET("users/confirmregistration", controller_users.ConfirmRegistration)
 	routes.POST("users/changepassword", AuthMiddleware(), controller_users.ChangePassword)
-
 	routes.POST("users/refreshtoken", AuthMiddleware(), controller_users.RefreshToken)
+
+	routes.POST("users/groups/add", AuthMiddleware(), controller_users.AddToGroup)
 }

@@ -5,6 +5,7 @@ import (
 	"errors"
 	"strings"
 
+	"github.com/AndrewSalko/salkodev.edms.go/core"
 	"github.com/AndrewSalko/salkodev.edms.go/database"
 	"go.mongodb.org/mongo-driver/bson"
 )
@@ -48,6 +49,22 @@ func FindUserAndCheckHash(ctx context.Context, userEmail string, userHashFromTok
 		err = errors.New("relogin required")
 		return
 	}
+
+	return user, err
+}
+
+// Find user by uid
+func FindUserByUID(ctx context.Context, userUID string) (user UserInfo, err error) {
+
+	users := Users()
+
+	_, err = core.UIDFromString(userUID)
+	if err != nil {
+		return
+	}
+
+	filter := bson.M{"uid": userUID}
+	err = users.FindOne(ctx, filter).Decode(&user)
 
 	return user, err
 }

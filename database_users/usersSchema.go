@@ -27,7 +27,7 @@ func ValidateSchema() {
 	ctx := context.TODO()
 
 	ValidateUsersCollection(ctx)
-	ValidateAdminAccount(ctx)
+	validateAdminAccount(ctx)
 
 	log.Println("Users schema validated")
 }
@@ -58,7 +58,7 @@ func ValidateUsersCollection(ctx context.Context) {
 	}
 }
 
-func ValidateAdminAccount(ctx context.Context) {
+func validateAdminAccount(ctx context.Context) {
 
 	users := Users()
 

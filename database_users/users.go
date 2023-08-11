@@ -26,6 +26,7 @@ type UserInfo struct {
 	Password        string             `bson:"password" json:"password" binding:"required"` //password hash
 	EmailConfirmed  bool               `bson:"email_confirmed" json:"email_confirmed"`
 	Hash            string             `bson:"hash" json:"hash"` //хеш користувача (для виявлення змін)
+	Groups          []string           `bson:"groups" json:"groups"`
 }
 
 // Отримати колекцію Users бази даних

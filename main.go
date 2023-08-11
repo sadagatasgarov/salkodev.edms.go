@@ -1,7 +1,6 @@
 ﻿package main
 
 import (
-	"context"
 	"fmt"
 
 	"github.com/AndrewSalko/salkodev.edms.go/database_groups"
@@ -15,8 +14,6 @@ func main() {
 
 	database_groups.ValidateSchema()
 	database_users.ValidateSchema()
-
-	database_users.ValidateAdminAccount(context.TODO())
 
 	router := gin.New()
 	routes.InitRoutes(router)
