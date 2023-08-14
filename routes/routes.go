@@ -14,4 +14,5 @@ func InitRoutes(routes *gin.Engine) {
 	routes.POST("users/refreshtoken", AuthMiddleware(), controller_users.RefreshToken)
 
 	routes.POST("users/groups/add", AuthMiddleware(), controller_users.AddToGroup)
+	routes.POST("users/groups/remove", AuthMiddleware(), controller_users.RemoveFromGroup)
 }

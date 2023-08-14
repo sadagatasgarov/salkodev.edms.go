@@ -11,14 +11,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// Used in add-remove user to groups
-type UserGroupsModifyRequest struct {
-	UserOID           string   `json:"user_oid" binding:"required"`
-	GroupsUniqueNames []string `json:"groups_unique_names" binding:"required"`
-}
-
-// Add user to groups (argument - AddUserToGroupsRequest)
-func AddToGroup(c *gin.Context) {
+// Remove user from groups (argument - UserGroupsModifyRequest)
+func RemoveFromGroup(c *gin.Context) {
 
 	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
 	defer cancel()
@@ -29,8 +23,8 @@ func AddToGroup(c *gin.Context) {
 		return
 	}
 
-	var addReq UserGroupsModifyRequest
-	err := c.BindJSON(&addReq)
+	var removeReq UserGroupsModifyRequest
+	err := c.BindJSON(&removeReq)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -44,7 +38,7 @@ func AddToGroup(c *gin.Context) {
 		return
 	}
 
-	err = database_groups.AddUser(ctx, user, addReq.UserOID, addReq.GroupsUniqueNames)
+	err = database_groups.RemoveUser(ctx, user, removeReq.UserOID, removeReq.GroupsUniqueNames)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

@@ -9,8 +9,8 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-// Add user to groups
-func AddUser(ctx context.Context, actingUser database_users.UserInfo, userUID string, groupsUniqueNames []string) error {
+// Remove user from groups
+func RemoveUser(ctx context.Context, actingUser database_users.UserInfo, userUID string, groupsUniqueNames []string) error {
 
 	if len(groupsUniqueNames) == 0 {
 		return errors.New("groupsUniqueNames empty")
@@ -31,14 +31,13 @@ func AddUser(ctx context.Context, actingUser database_users.UserInfo, userUID st
 	for q := 0; q < len(groupsUniqueNames); q++ {
 		uniqName := groupsUniqueNames[q]
 		_, inGroups := currentGroups[uniqName]
-		if !inGroups {
-			currentGroups[uniqName] = ""
+		if inGroups {
+			delete(currentGroups, uniqName)
 			needUpdate = true
 		}
 	}
 
 	if needUpdate {
-
 		//now update user's groups in MongoDB
 		groupResultUniqNames := core.CreateStringsFromMapKeys(&currentGroups)
 
