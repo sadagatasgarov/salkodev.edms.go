@@ -16,7 +16,10 @@ func RemoveUser(ctx context.Context, actingUser database_users.UserInfo, userUID
 		return errors.New("groupsUniqueNames empty")
 	}
 
-	//TODO: check if actingUser in Administrators group
+	err := CheckAdministratorsGroup(actingUser.Groups)
+	if err != nil {
+		return err
+	}
 
 	//find user to operate with
 	user, err := database_users.FindUserByUID(ctx, userUID)
