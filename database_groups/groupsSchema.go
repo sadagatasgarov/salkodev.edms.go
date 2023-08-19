@@ -10,11 +10,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-const AdministratorsGroupID = "260400060000000000000002"
-const AdministratorsGroupName = "Administrators"
-const AdministratorsGroupUniqueName = "administrators"
-const AdministratorsGroupDescription = "Manage system settings, access administrative tasks"
-
 func ValidateSchema() {
 
 	ctx := context.TODO()
@@ -49,7 +44,7 @@ func ValidateGroupsCollection(ctx context.Context) {
 // Validate system groups
 func ValidateGroups(ctx context.Context) {
 
-	err := validateGroup(ctx, AdministratorsGroupID, AdministratorsGroupName, AdministratorsGroupUniqueName, AdministratorsGroupDescription)
+	err := validateGroup(ctx, database.AdministratorsGroupID, database.AdministratorsGroupName, database.AdministratorsGroupUniqueName, database.AdministratorsGroupDescription)
 	if err != nil {
 		panic(err)
 	}

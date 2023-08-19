@@ -5,6 +5,7 @@ import (
 	"errors"
 
 	"github.com/AndrewSalko/salkodev.edms.go/core"
+	"github.com/AndrewSalko/salkodev.edms.go/database"
 	"github.com/AndrewSalko/salkodev.edms.go/database_users"
 )
 
@@ -54,7 +55,7 @@ func UserInGroup(ctx context.Context, userUID string, groupUniqueName string) (m
 func CheckAdministratorsGroup(userGroups []string) error {
 
 	for _, gr := range userGroups {
-		if gr == AdministratorsGroupUniqueName {
+		if gr == database.AdministratorsGroupUniqueName {
 			return nil
 		}
 	}
