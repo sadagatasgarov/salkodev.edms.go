@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/AndrewSalko/salkodev.edms.go/database_groups"
+	"github.com/AndrewSalko/salkodev.edms.go/database_orgs"
 	"github.com/AndrewSalko/salkodev.edms.go/database_users"
 	"github.com/AndrewSalko/salkodev.edms.go/routes"
 	"github.com/gin-gonic/gin"
@@ -14,6 +15,7 @@ func main() {
 
 	database_groups.ValidateSchema()
 	database_users.ValidateSchema()
+	database_orgs.ValidateSchema()
 
 	router := gin.New()
 	routes.InitRoutes(router)
