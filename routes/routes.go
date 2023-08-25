@@ -21,4 +21,6 @@ func InitRoutes(routes *gin.Engine) {
 	routes.POST("users/groups/remove", AuthMiddleware(), controller_users.RemoveFromGroup)
 
 	routes.POST("orgs/create", AuthMiddleware(), controller_orgs.CreateOrganization)
+	routes.POST("orgs/modify", AuthMiddleware(), controller_orgs.ModifyOrganization)
+	routes.DELETE("orgs/delete", AuthMiddleware(), controller_orgs.DeleteOrganization)
 }

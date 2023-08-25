@@ -21,6 +21,15 @@ const OrganizationInfoFieldOwnerUID = "owner_uid"
 const OrganizationInfoFieldName = "name"
 const OrganizationInfoFieldDescription = "description"
 
+// flag for modification Org Name
+const OrganizationInfoName = 1
+
+// flag for modification Org Description
+const OrganizationInfoDescription = 2
+
+// flag for modification Org OwnerUID (change owner user)
+const OrganizationInfoOwnerUID = 4
+
 // Отримати колекцію Organizations бази даних
 func Organizations() *mongo.Collection {
 

@@ -22,8 +22,18 @@ func CreateOrganization(ctx context.Context, org OrganizationInfo) (createdOrg O
 		return
 	}
 
-	if org.OwnerUID == "" {
-		err = errors.New("org.OwnerUID not specified")
+	exists, err := OrganizationWithNameExists(ctx, org.Name)
+	if err != nil {
+		return
+	}
+
+	if exists {
+		err = errors.New("organization with such name already exists")
+		return
+	}
+
+	_, err = core.UIDFromStringWithArg(org.OwnerUID, "org.OwnerUID")
+	if err != nil {
 		return
 	}
 
