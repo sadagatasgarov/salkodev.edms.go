@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"github.com/AndrewSalko/salkodev.edms.go/controller_departments"
 	"github.com/AndrewSalko/salkodev.edms.go/controller_orgs"
 	"github.com/AndrewSalko/salkodev.edms.go/controller_users"
 	"github.com/gin-gonic/gin"
@@ -23,4 +24,6 @@ func InitRoutes(routes *gin.Engine) {
 	routes.POST("orgs/create", AuthMiddleware(), controller_orgs.CreateOrganization)
 	routes.POST("orgs/modify", AuthMiddleware(), controller_orgs.ModifyOrganization)
 	routes.DELETE("orgs/delete", AuthMiddleware(), controller_orgs.DeleteOrganization)
+
+	routes.POST("departments/create", AuthMiddleware(), controller_departments.CreateDepartment)
 }
