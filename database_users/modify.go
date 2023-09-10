@@ -49,6 +49,11 @@ func ModifyUser(ctx context.Context, userData UserInfo, userFields int) (err err
 		user.OrganizationUID = userData.OrganizationUID //for hash regen
 	}
 
+	if userFields&UserInfoDepartmentUID > 0 {
+		upd = append(upd, bson.E{Key: UserInfoFieldDepartmentUID, Value: userData.DepartmentUID})
+		user.DepartmentUID = userData.DepartmentUID //for hash regen
+	}
+
 	if userFields&UserInfoPassword > 0 {
 		//TODO: check password policy
 		user.Password = auth.HashPassword(userData.Password)
@@ -56,7 +61,7 @@ func ModifyUser(ctx context.Context, userData UserInfo, userFields int) (err err
 	}
 
 	//update user hash (UserInfoFieldHash)
-	hash := GenerateUserHash(user.UID, user.OrganizationUID, user.Name, user.Email, user.AccountOptions, user.Password)
+	hash := GenerateUserHash(user.UID, user.OrganizationUID, user.DepartmentUID, user.Name, user.Email, user.AccountOptions, user.Password)
 	upd = append(upd, bson.E{Key: UserInfoFieldHash, Value: hash})
 
 	update := bson.D{{Key: "$set", Value: upd}}

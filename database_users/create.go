@@ -43,7 +43,7 @@ func CreateUser(ctx context.Context, user UserInfo) (createdUser UserInfo, err e
 	//Org UID not required
 
 	//розрахувати хеш важливих даних користувача
-	user.Hash = GenerateUserHash(user.UID, user.OrganizationUID, user.Name, user.Email, user.AccountOptions, user.Password)
+	user.Hash = GenerateUserHash(user.UID, user.OrganizationUID, user.DepartmentUID, user.Name, user.Email, user.AccountOptions, user.Password)
 
 	result, insertErr := users.InsertOne(ctx, user)
 	if insertErr != nil {

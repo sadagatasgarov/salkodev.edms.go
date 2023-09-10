@@ -95,7 +95,7 @@ func validateAdminAccount(ctx context.Context) {
 		user.EmailConfirmed = true
 		user.UID = AdminAccountUID
 		user.Groups = []string{database.AdministratorsGroupUniqueName}
-		user.Hash = GenerateUserHash(user.UID, user.OrganizationUID, user.Name, user.Email, user.AccountOptions, user.Password)
+		user.Hash = GenerateUserHash(user.UID, user.OrganizationUID, user.DepartmentUID, user.Name, user.Email, user.AccountOptions, user.Password)
 
 		_, insertErr := users.InsertOne(ctx, user)
 		if insertErr != nil {

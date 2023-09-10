@@ -13,6 +13,7 @@ type UserInfo struct {
 	ID              primitive.ObjectID `bson:"_id" json:"id,omitempty"`
 	UID             string             `bson:"uid" json:"uid" binding:"required"`
 	OrganizationUID string             `bson:"org_uid" json:"org_uid,omitempty"`
+	DepartmentUID   string             `bson:"department_uid" json:"department_uid,omitempty"`
 	Name            string             `bson:"name" json:"name" binding:"required"`
 	Email           string             `bson:"email" json:"email" binding:"required"`
 	AccountOptions  int                `bson:"account_options" json:"account_options" binding:"required"`
@@ -31,6 +32,7 @@ const UserInfoFieldPassword = "password"
 const UserInfoFieldEmailConfirmed = "email_confirmed"
 const UserInfoFieldHash = "hash"
 const UserInfoFieldGroups = "groups"
+const UserInfoFieldDepartmentUID = "department_uid"
 
 // Flag for UserModify - modify OrganizationUID
 const UserInfoOrganizationUID = 1
@@ -49,6 +51,9 @@ const UserInfoPassword = 16
 
 // Flag for UserModify - modify EmailConfirmed
 const UserInfoEmailConfirmed = 32
+
+// Flag for UserModify - modify DepartmentUID
+const UserInfoDepartmentUID = 64
 
 // Отримати колекцію Users бази даних
 func Users() *mongo.Collection {

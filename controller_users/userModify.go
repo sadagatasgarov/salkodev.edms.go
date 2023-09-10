@@ -21,6 +21,7 @@ type ModifyUserRequest struct {
 	Password        string `json:"password,omitempty"`
 	AccountOptions  int    `json:"account_options"`
 	OrganizationUID string `json:"org_uid,omitempty"`
+	DepartmentUID   string `json:"department_uid,omitempty"`
 	EmailConfirmed  bool   `json:"email_confirmed"`
 }
 
@@ -80,6 +81,7 @@ func ModifyUser(c *gin.Context) {
 		Password:        user.Password,
 		AccountOptions:  user.AccountOptions,
 		OrganizationUID: user.OrganizationUID,
+		DepartmentUID:   user.DepartmentUID,
 		EmailConfirmed:  user.EmailConfirmed,
 	}
 
