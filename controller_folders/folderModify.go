@@ -1,4 +1,4 @@
-package controller_orgs
+package controller_folders
 
 import (
 	"context"
@@ -6,22 +6,23 @@ import (
 	"time"
 
 	"github.com/AndrewSalko/salkodev.edms.go/controller"
-	"github.com/AndrewSalko/salkodev.edms.go/database_orgs"
+	"github.com/AndrewSalko/salkodev.edms.go/database_folders"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 )
 
 // For modify org request (from API)
-type ModifyOrganizationRequest struct {
-	UID          string `json:"uid" binding:"required"`
-	ModifyFields int    `json:"modify_fields" binding:"required"`
-	Name         string `json:"name,omitempty"`
-	Description  string `json:"description,omitempty"`
-	OwnerUID     string `json:"owner_uid,omitempty"`
+type ModifyFolderRequest struct {
+	UID             string `json:"uid" binding:"required"`
+	OrganizationUID string `json:"org_uid"`
+	DepartmentUID   string `json:"department_uid"`
+	ModifyFields    int    `json:"modify_fields" binding:"required"`
+	Name            string `json:"name,omitempty"`
+	Description     string `json:"description,omitempty"`
 }
 
-// Modify organization. Administrators group or user-owner required
-func ModifyOrganization(c *gin.Context) {
+// Modify Folder. Administrators group or org-admin user required
+func ModifyFolder(c *gin.Context) {
 
 	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
 	defer cancel()
@@ -31,15 +32,15 @@ func ModifyOrganization(c *gin.Context) {
 		return
 	}
 
-	var org ModifyOrganizationRequest
-	err = c.BindJSON(&org)
+	var folder ModifyFolderRequest
+	err = c.BindJSON(&folder)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	validate := validator.New()
-	validationErr := validate.Struct(org)
+	validationErr := validate.Struct(folder)
 
 	if validationErr != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": validationErr.Error()})
@@ -49,19 +50,20 @@ func ModifyOrganization(c *gin.Context) {
 	//UID is key field, and required to find user which we want to modify
 	//ModifyFields is flags(int) which describes which fields need to be changed
 
-	if org.ModifyFields == 0 {
+	if folder.ModifyFields == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "modify_fields must be specified"})
 		return
 	}
 
-	modifyOrg := database_orgs.OrganizationInfo{
-		UID:         org.UID,
-		Name:        org.Name,
-		Description: org.Description,
-		OwnerUID:    org.OwnerUID,
+	modifyFolder := database_folders.FolderInfo{
+		UID:             folder.UID,
+		OrganizationUID: folder.OrganizationUID,
+		DepartmentUID:   folder.DepartmentUID,
+		Name:            folder.Name,
+		Description:     folder.Description,
 	}
 
-	err = database_orgs.ModifyOrganization(ctx, modifyOrg, org.ModifyFields)
+	err = database_folders.ModifyFolder(ctx, modifyFolder, folder.ModifyFields)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

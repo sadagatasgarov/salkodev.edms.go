@@ -5,10 +5,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/AndrewSalko/salkodev.edms.go/auth"
+	"github.com/AndrewSalko/salkodev.edms.go/controller"
 	"github.com/AndrewSalko/salkodev.edms.go/database_departments"
-	"github.com/AndrewSalko/salkodev.edms.go/database_groups"
-	"github.com/AndrewSalko/salkodev.edms.go/database_users"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 )
@@ -27,25 +25,9 @@ func CreateDepartment(c *gin.Context) {
 	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
 	defer cancel()
 
-	claim, found := c.Get(auth.AuthUserClaimKey)
-	if !found {
-		c.JSON(http.StatusBadRequest, gin.H{"error": auth.AuthUserClaimKey + " not found"})
-		return
-	}
-
-	userClaim := claim.(*auth.UserClaim)
-
-	userActing, err := database_users.FindUserAndCheckHash(ctx, userClaim.Email, userClaim.UserHash)
+	_, err := controller.UserFromGinContextValidateAdministrators(ctx, c)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
-	}
-
-	admins := false
-
-	err = database_groups.CheckAdministratorsGroup(userActing.Groups)
-	if err == nil {
-		admins = true
 	}
 
 	var depReq CreateDepartmentRequest
@@ -60,12 +42,6 @@ func CreateDepartment(c *gin.Context) {
 
 	if validationErr != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": validationErr.Error()})
-		return
-	}
-
-	//TODO: if not admins, only if we has own org and we owner or org-admins group
-	if !admins {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "administrators membership required"})
 		return
 	}
 

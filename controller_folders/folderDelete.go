@@ -1,4 +1,4 @@
-package controller_orgs
+package controller_folders
 
 import (
 	"context"
@@ -6,13 +6,13 @@ import (
 	"time"
 
 	"github.com/AndrewSalko/salkodev.edms.go/controller"
-	"github.com/AndrewSalko/salkodev.edms.go/database_orgs"
+	"github.com/AndrewSalko/salkodev.edms.go/database_folders"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 )
 
-// Delete Organization API method
-func DeleteOrganization(c *gin.Context) {
+// Delete Folder API method
+func DeleteFolder(c *gin.Context) {
 
 	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
 	defer cancel()
@@ -22,28 +22,28 @@ func DeleteOrganization(c *gin.Context) {
 		return
 	}
 
-	var org controller.UIDRequest
-	err = c.BindJSON(&org)
+	var folder controller.UIDRequest
+	err = c.BindJSON(&folder)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	validate := validator.New()
-	validationErr := validate.Struct(org)
+	validationErr := validate.Struct(folder)
 
 	if validationErr != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": validationErr.Error()})
 		return
 	}
 
-	//UID is key field, and required to find org
+	//UID is key field, and required to find department
 
-	if org.UID == "" {
+	if folder.UID == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "uid must be specified"})
 		return
 	}
-	err = database_orgs.DeleteOrganization(ctx, org.UID)
+	err = database_folders.DeleteFolder(ctx, folder.UID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
