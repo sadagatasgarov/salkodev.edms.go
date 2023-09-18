@@ -22,14 +22,17 @@ func InitRoutes(routes *gin.Engine) {
 	routes.POST("users/groups/add", AuthMiddleware(), controller_users.AddToGroup)
 	routes.POST("users/groups/remove", AuthMiddleware(), controller_users.RemoveFromGroup)
 
+	routes.GET("orgs/:uid", AuthMiddleware(), controller_orgs.GetOrganizationByUID)
 	routes.POST("orgs/create", AuthMiddleware(), controller_orgs.CreateOrganization)
 	routes.POST("orgs/modify", AuthMiddleware(), controller_orgs.ModifyOrganization)
 	routes.DELETE("orgs/delete", AuthMiddleware(), controller_orgs.DeleteOrganization)
 
+	routes.GET("departments/:uid", AuthMiddleware(), controller_departments.GetDepartmentByUID)
 	routes.POST("departments/create", AuthMiddleware(), controller_departments.CreateDepartment)
 	routes.POST("departments/modify", AuthMiddleware(), controller_departments.ModifyDepartment)
 	routes.DELETE("departments/delete", AuthMiddleware(), controller_departments.DeleteDepartment)
 
+	routes.GET("folders/:uid", AuthMiddleware(), controller_folders.GetFolderByUID)
 	routes.POST("folders/create", AuthMiddleware(), controller_folders.CreateFolder)
 	routes.POST("folders/modify", AuthMiddleware(), controller_folders.ModifyFolder)
 	routes.DELETE("folders/delete", AuthMiddleware(), controller_folders.DeleteFolder)
