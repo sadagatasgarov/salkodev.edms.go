@@ -40,6 +40,11 @@ func CreateOrganization(ctx context.Context, org OrganizationInfo) (createdOrg O
 	//generate new UID if not specified
 	if org.UID == "" {
 		org.UID = core.GenerateUID()
+	} else {
+		_, err = core.UIDFromStringWithArg(org.UID, "org.UID")
+		if err != nil {
+			return
+		}
 	}
 
 	result, insertErr := orgs.InsertOne(ctx, org)
