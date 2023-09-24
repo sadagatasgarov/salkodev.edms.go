@@ -17,6 +17,7 @@ func CreateDepartment(ctx context.Context, department DepartmentInfo) (createdDe
 
 	_, err = database_orgs.FindOrganizationByUID(ctx, department.OrganizationUID)
 	if err != nil {
+		err = errors.Join(errors.New("FindOrganizationByUID"), err)
 		return
 	}
 
@@ -40,6 +41,11 @@ func CreateDepartment(ctx context.Context, department DepartmentInfo) (createdDe
 	//if department uid unspecified, generate new uid
 	if department.UID == "" {
 		department.UID = core.GenerateUID()
+	} else {
+		_, err = core.UIDFromStringWithArg(department.UID, "department.UID")
+		if err != nil {
+			return
+		}
 	}
 
 	result, insertErr := deps.InsertOne(ctx, department)
