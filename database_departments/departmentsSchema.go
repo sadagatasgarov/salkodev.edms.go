@@ -40,4 +40,10 @@ func ValidateDepartmentsCollection(ctx context.Context) {
 	if err != nil {
 		panic(err)
 	}
+
+	err = database.CreateCollectionIndexOnField(ctx, deps, DepartmentInfoFieldCreationTime)
+	if err != nil {
+		panic(err)
+	}
+
 }

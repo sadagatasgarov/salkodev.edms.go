@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 
 	"github.com/AndrewSalko/salkodev.edms.go/core"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -46,6 +47,9 @@ func CreateOrganization(ctx context.Context, org OrganizationInfo) (createdOrg O
 			return
 		}
 	}
+
+	//creation time set
+	org.CreationTime = time.Now()
 
 	result, insertErr := orgs.InsertOne(ctx, org)
 	if insertErr != nil {

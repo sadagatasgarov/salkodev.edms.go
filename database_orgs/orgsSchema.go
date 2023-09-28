@@ -40,4 +40,10 @@ func ValidateOrgsCollection(ctx context.Context) {
 	if err != nil {
 		panic(err)
 	}
+
+	err = database.CreateCollectionIndexOnField(ctx, orgs, OrganizationInfoFieldCreationTime)
+	if err != nil {
+		panic(err)
+	}
+
 }

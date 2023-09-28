@@ -1,6 +1,8 @@
 package database_departments
 
 import (
+	"time"
+
 	"github.com/AndrewSalko/salkodev.edms.go/database"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -17,6 +19,7 @@ const DepartmentsMaxCount = 100
 type DepartmentInfo struct {
 	ID              primitive.ObjectID `bson:"_id" json:"id,omitempty"`
 	UID             string             `bson:"uid" json:"uid" binding:"required"`
+	CreationTime    time.Time          `bson:"creation_time" json:"creation_time" binding:"required"`
 	OrganizationUID string             `bson:"org_uid" json:"org_uid" binding:"required"`
 	Name            string             `bson:"name" json:"name" binding:"required"`
 	Description     string             `bson:"description,omitempty" json:"description,omitempty"`
@@ -26,6 +29,7 @@ const DepartmentInfoFieldUID = "uid"
 const DepartmentInfoFieldOrgUID = "org_uid"
 const DepartmentInfoFieldName = "name"
 const DepartmentInfoFieldDescription = "description"
+const DepartmentInfoFieldCreationTime = "creation_time"
 
 // flag for modification Department org_uid
 const DepartmentInfoOrganizationUID = 1

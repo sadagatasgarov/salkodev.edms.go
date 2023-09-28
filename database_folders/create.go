@@ -3,6 +3,7 @@ package database_folders
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/AndrewSalko/salkodev.edms.go/core"
 	"github.com/AndrewSalko/salkodev.edms.go/database_orgs"
@@ -38,7 +39,15 @@ func CreateFolder(ctx context.Context, folder FolderInfo) (createdFolder FolderI
 	//if folder uid unspecified, generate new uid
 	if folder.UID == "" {
 		folder.UID = core.GenerateUID()
+	} else {
+		_, err = core.UIDFromStringWithArg(folder.UID, "folder.UID")
+		if err != nil {
+			return
+		}
 	}
+
+	//creation time set
+	folder.CreationTime = time.Now()
 
 	result, insertErr := folders.InsertOne(ctx, folder)
 	if insertErr != nil {

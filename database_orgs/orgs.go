@@ -1,6 +1,8 @@
 package database_orgs
 
 import (
+	"time"
+
 	"github.com/AndrewSalko/salkodev.edms.go/database"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -9,17 +11,19 @@ import (
 const OrganizationsCollectionName = "Organizations"
 
 type OrganizationInfo struct {
-	ID          primitive.ObjectID `bson:"_id" json:"id,omitempty"`
-	UID         string             `bson:"uid" json:"uid" binding:"required"`
-	OwnerUID    string             `bson:"owner_uid" json:"owner_uid" binding:"required"`
-	Name        string             `bson:"name" json:"name" binding:"required"`
-	Description string             `bson:"description,omitempty" json:"description,omitempty"`
+	ID           primitive.ObjectID `bson:"_id" json:"id,omitempty"`
+	UID          string             `bson:"uid" json:"uid" binding:"required"`
+	CreationTime time.Time          `bson:"creation_time" json:"creation_time" binding:"required"`
+	OwnerUID     string             `bson:"owner_uid" json:"owner_uid" binding:"required"`
+	Name         string             `bson:"name" json:"name" binding:"required"`
+	Description  string             `bson:"description,omitempty" json:"description,omitempty"`
 }
 
 const OrganizationInfoFieldUID = "uid"
 const OrganizationInfoFieldOwnerUID = "owner_uid"
 const OrganizationInfoFieldName = "name"
 const OrganizationInfoFieldDescription = "description"
+const OrganizationInfoFieldCreationTime = "creation_time"
 
 // flag for modification Org Name
 const OrganizationInfoName = 1

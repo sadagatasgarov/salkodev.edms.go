@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 
 	"github.com/AndrewSalko/salkodev.edms.go/core"
 	"github.com/AndrewSalko/salkodev.edms.go/database_orgs"
@@ -47,6 +48,9 @@ func CreateDepartment(ctx context.Context, department DepartmentInfo) (createdDe
 			return
 		}
 	}
+
+	//creation time set
+	department.CreationTime = time.Now()
 
 	result, insertErr := deps.InsertOne(ctx, department)
 	if insertErr != nil {

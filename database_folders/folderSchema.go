@@ -45,4 +45,10 @@ func ValidateFoldersCollection(ctx context.Context) {
 	if err != nil {
 		panic(err)
 	}
+
+	err = database.CreateCollectionIndexOnField(ctx, deps, FolderInfoFieldCreationTime)
+	if err != nil {
+		panic(err)
+	}
+
 }
