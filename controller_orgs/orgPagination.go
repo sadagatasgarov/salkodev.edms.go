@@ -26,12 +26,13 @@ func GetOrganizationsPage(c *gin.Context) {
 
 	orgs := database_orgs.Organizations()
 
-	totalRecords, skipCount, page, perPage, err := controller.PaginationPrepare(c, ctx, orgs)
+	totalRecords, totalPages, skipCount, page, perPage, err := controller.PaginationPrepare(c, ctx, orgs)
 	if err != nil {
 		return //web response done in PaginationPrepare
 	}
 
 	result.Pagination.TotalRecords = totalRecords
+	result.Pagination.TotalPages = totalPages
 
 	// Find the documents with the skip and limit options
 	cursor, err := orgs.Find(ctx, bson.M{}, options.Find().SetSkip(int64(skipCount)).SetLimit(int64(perPage)))

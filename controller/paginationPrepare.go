@@ -2,6 +2,8 @@ package controller
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -20,7 +22,7 @@ const PaginationPageParam = "page"
 const PaginationPerPageParam = "per_page"
 
 // Helper function for pagination init process
-func PaginationPrepare(c *gin.Context, ctx context.Context, collection *mongo.Collection) (totalRecords int64, skipCount int, page int, perPage int, err error) {
+func PaginationPrepare(c *gin.Context, ctx context.Context, collection *mongo.Collection) (totalRecords int64, totalPages int64, skipCount int64, page int64, perPage int, err error) {
 
 	page = 1
 
@@ -28,7 +30,7 @@ func PaginationPrepare(c *gin.Context, ctx context.Context, collection *mongo.Co
 	if pageNumberStr != "" {
 		pageVal, err := strconv.Atoi(pageNumberStr)
 		if err == nil && pageVal > 0 {
-			page = pageVal
+			page = int64(pageVal)
 		}
 	}
 
@@ -55,7 +57,21 @@ func PaginationPrepare(c *gin.Context, ctx context.Context, collection *mongo.Co
 	}
 
 	totalRecords = docsCount
-	skipCount = (page - 1) * perPage
+	totalPages = docsCount / int64(perPage)
+	remainder := docsCount % int64(perPage)
+	if remainder > 0 {
+		totalPages++
+	}
+
+	//check non-existend page
+	if page > totalPages {
+		errMsg := fmt.Sprintf("page %d not found", page)
+		err = errors.New(errMsg)
+		c.JSON(http.StatusNotFound, gin.H{"error": errMsg})
+		return
+	}
+
+	skipCount = (page - 1) * int64(perPage)
 	err = nil
 
 	return
