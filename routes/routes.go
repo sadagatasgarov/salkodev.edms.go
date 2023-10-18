@@ -29,6 +29,7 @@ func InitRoutes(routes *gin.Engine) {
 	routes.DELETE("orgs/delete", AuthMiddleware(), controller_orgs.DeleteOrganization)
 
 	routes.GET("departments/:uid", AuthMiddleware(), controller_departments.GetDepartmentByUID)
+	routes.GET("departments", AuthMiddleware(), controller_departments.GetDepartmentsPage)
 	routes.POST("departments/create", AuthMiddleware(), controller_departments.CreateDepartment)
 	routes.POST("departments/modify", AuthMiddleware(), controller_departments.ModifyDepartment)
 	routes.DELETE("departments/delete", AuthMiddleware(), controller_departments.DeleteDepartment)
