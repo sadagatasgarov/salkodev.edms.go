@@ -13,6 +13,7 @@ func InitRoutes(routes *gin.Engine) {
 	routes.POST("users/register", controller_users.Register)
 	routes.POST("users/login", controller_users.Login)
 	routes.GET("users/confirmregistration", controller_users.ConfirmRegistration)
+	routes.GET("users", AuthMiddleware(), controller_users.GetUsersPage)
 	routes.POST("users/changepassword", AuthMiddleware(), controller_users.ChangePassword)
 	routes.POST("users/refreshtoken", AuthMiddleware(), controller_users.RefreshToken)
 	routes.POST("users/create", AuthMiddleware(), controller_users.CreateUser)
@@ -35,6 +36,7 @@ func InitRoutes(routes *gin.Engine) {
 	routes.DELETE("departments/delete", AuthMiddleware(), controller_departments.DeleteDepartment)
 
 	routes.GET("folders/:uid", AuthMiddleware(), controller_folders.GetFolderByUID)
+	routes.GET("folders", AuthMiddleware(), controller_folders.GetFoldersPage)
 	routes.POST("folders/create", AuthMiddleware(), controller_folders.CreateFolder)
 	routes.POST("folders/modify", AuthMiddleware(), controller_folders.ModifyFolder)
 	routes.DELETE("folders/delete", AuthMiddleware(), controller_folders.DeleteFolder)
